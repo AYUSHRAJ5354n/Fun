@@ -1,23 +1,34 @@
+cat > config/config.yaml << 'EOL'
+# Core Settings
 target_servers:
   - "Hardsub English Dailymotion"
   - "Hardsub English Ok.ru"
   - "Hardsub English Mega"
   - "Hardsub English Rumble"
 
-qualities: ["1080p", "720p", "480p", "360p"]
+qualities: 
+  - "1080p"
+  - "720p"
+  - "480p"
+  - "360p"
+
 output_format: "doc"
 
+# Rate Limiting
 request_intervals:
   dailymotion: 8.0
   okru: 5.0
   default: 3.0
 
+# Telegram
 telegram:
   bot_token: "YOUR_BOT_TOKEN"
   channel_id: "YOUR_CHANNEL_ID"
   max_file_size: 2000
 
+# System
 storage:
   download_dir: "/data/downloads"
   temp_dir: "/data/temp"
   keep_original: false
+EOL
