@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import time
+import random
 from downloader import AnimeXinDownloader
 from processor import VideoProcessor
 from tracker import EpisodeTracker
@@ -7,7 +8,7 @@ from utilities import send_telegram_notification
 
 def process_episode(url, downloader, processor):
     try:
-        print(f"Processing episode: {url}")
+        print(f"Processing: {url}")
         video_path = downloader.download_episode(url)
         if video_path:
             doc_path = processor.convert_to_doc(video_path)
@@ -34,14 +35,13 @@ def main():
                 if not tracker.is_processed(ep_url):
                     success = process_episode(ep_url, downloader, processor)
                     tracker.mark_processed(ep_url, success)
-                    time.sleep(random.uniform(5, 10))  # Random delay between episodes
+                    time.sleep(random.uniform(5, 10))
             
-            # Wait before next check (1 hour)
-            time.sleep(2600)
+            time.sleep(3600)
             
         except Exception as e:
             print(f"Main loop error: {str(e)}")
-            time.sleep(600)  # Wait 10 minutes after error
+            time.sleep(600)
 
 if __name__ == "__main__":
     main()
