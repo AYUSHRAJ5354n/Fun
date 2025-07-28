@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  downloader:
+    build: .
+    volumes:
+      - ./config:/app/config
+      - ./data:/data
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Jakarta
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
