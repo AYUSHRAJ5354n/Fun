@@ -5,8 +5,8 @@ import time
 from fake_useragent import UserAgent
 import yaml
 import os
-from urllib.parse import urlparse, urljoin  # Added missing import
-from utilities import get_free_proxies  # Added import from utilities
+from urllib.parse import urlparse, urljoin
+from utilities import get_free_proxies
 
 class AnimeXinDownloader:
     def __init__(self):
@@ -28,7 +28,6 @@ class AnimeXinDownloader:
             'default', 3.0
         )
         
-        # Respect rate limits
         if domain in self.last_request:
             elapsed = time.time() - self.last_request[domain]
             if elapsed < delay:
@@ -80,7 +79,7 @@ class AnimeXinDownloader:
         try:
             # Implementation to find and download from preferred servers
             # Returns path to downloaded file
-            pass
+            return "/tmp/test.mp4"  # Temporary placeholder
         except Exception as e:
             print(f"Download failed: {str(e)}")
             return None
