@@ -3,7 +3,6 @@ import os
 from telegram import Bot
 from telegram.error import TelegramError
 import yaml
-from urllib.parse import urlparse  # Added for proxy handling
 
 def load_config():
     with open('config/config.yaml') as f:
@@ -18,8 +17,7 @@ def send_telegram_notification(file_path):
         
         bot = Bot(token=bot_token)
         
-        # Check file size
-        file_size = os.path.getsize(file_path) / (1024 * 1024)  # in MB
+        file_size = os.path.getsize(file_path) / (1024 * 1024)
         max_size = config['telegram'].get('max_file_size', 50)
         
         if file_size > max_size:
@@ -62,4 +60,4 @@ def get_free_proxies():
         except:
             continue
     
-    return list(set(proxies))[:50]  # Return unique proxies, max 50
+    return list(set(proxies))[:50]
