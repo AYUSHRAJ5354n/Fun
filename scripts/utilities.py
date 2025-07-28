@@ -3,6 +3,7 @@ import os
 from telegram import Bot
 from telegram.error import TelegramError
 import yaml
+from urllib.parse import urlparse  # Added for proxy handling
 
 def load_config():
     with open('config/config.yaml') as f:
@@ -22,7 +23,6 @@ def send_telegram_notification(file_path):
         max_size = config['telegram'].get('max_file_size', 50)
         
         if file_size > max_size:
-            # Send as document if too large
             with open(file_path, 'rb') as f:
                 bot.send_document(
                     chat_id=channel_id,
@@ -30,7 +30,6 @@ def send_telegram_notification(file_path):
                     caption="New episode available"
                 )
         else:
-            # Send as video if within size limit
             with open(file_path, 'rb') as f:
                 bot.send_video(
                     chat_id=channel_id,
@@ -47,17 +46,20 @@ def send_telegram_notification(file_path):
         return False
 
 def get_free_proxies():
-    """Alternative free proxy scraper"""
-    try:
-        url = "https://www.proxy-list.download/api/v1/get"
-        params = {
-            'type': 'https',
-            'anon': 'elite',
-            'country': 'US,UK,CA'
-        }
-        response = requests.get(url, params=params, timeout=10)
-        if response.ok:
-            return [f"http://{p}" for p in response.text.split('\r\n') if p]
-        return []
-    except:
-        return []
+    """Get free proxies from multiple sources"""
+    proxy_sources = [
+        "https://www.proxy-list.download/api/v1/get?type=https",
+        "https://api.proxyscrape.com/v2/?request=getproxies&protocol=http",
+        "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
+    ]
+    
+    proxies = []
+    for source in proxy_sources:
+        try:
+            response = requests.get(source, timeout=10)
+            if response.ok:
+                proxies.extend([f"http://{p.strip()}" for p in response.text.split('\n') if p.strip()])
+        except:
+            continue
+    
+    return list(set(proxies))[:50]  # Return unique proxies, max 50
