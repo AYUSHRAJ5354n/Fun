@@ -10,9 +10,9 @@ output_format: "doc"
 
 # Rate Limiting
 request_intervals:
-  dailymotion: 5.0
-  okru: 3.0
-  default: 2.0
+  dailymotion: 8.0  # Higher delay for Dailymotion
+  okru: 5.0
+  default: 3.0
 
 # Telegram
 telegram:
