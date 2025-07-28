@@ -5,7 +5,8 @@ import time
 from fake_useragent import UserAgent
 import yaml
 import os
-from urllib.parse import urljoin
+from urllib.parse import urlparse, urljoin  # Added missing import
+from utilities import get_free_proxies  # Added import from utilities
 
 class AnimeXinDownloader:
     def __init__(self):
@@ -17,21 +18,6 @@ class AnimeXinDownloader:
     def load_config(self):
         with open('config/config.yaml') as f:
             self.config = yaml.safe_load(f)
-    
-    def get_free_proxies(self):
-        """Scrape free proxies from public sources"""
-        try:
-            url = "https://free-proxy-list.net/"
-            response = requests.get(url, timeout=10)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            proxies = []
-            for row in soup.select('table#proxylisttable tbody tr'):
-                cells = row.find_all('td')
-                if cells[6].text == 'yes':  # HTTPS enabled
-                    proxies.append(f"http://{cells[0].text}:{cells[1].text}")
-            return proxies[:20]  # Return top 20
-        except:
-            return []  # Fallback to no proxies
     
     def make_request(self, url):
         """Smart request with rate limiting and proxy rotation"""
@@ -48,10 +34,10 @@ class AnimeXinDownloader:
             if elapsed < delay:
                 time.sleep(delay - elapsed)
         
-        proxies = self.get_free_proxies()
+        proxies = get_free_proxies()
         headers = {'User-Agent': self.ua.random}
         
-        for attempt in range(3):  # Retry 3 times
+        for attempt in range(3):
             try:
                 proxy = random.choice(proxies) if proxies else None
                 response = self.session.get(
@@ -92,7 +78,7 @@ class AnimeXinDownloader:
     def download_episode(self, episode_url):
         """Download episode from preferred server"""
         try:
-            # (Implementation to find and download from preferred servers)
+            # Implementation to find and download from preferred servers
             # Returns path to downloaded file
             pass
         except Exception as e:
